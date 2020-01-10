@@ -41,9 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="03-ItemWithFieldsTest.cs" />
+    <Compile Include="03-ItemChildrenWithNSubHelper.cs" />
+    <Compile Include="03-ItemChildrenWithFakes.cs" />
+    <Compile Include="04-VersionedItemWithFieldsTest.cs" />
     <Compile Include="01-EmptyItemTest.cs" />
     <Compile Include="02-AxesTest.cs" />
+    <Compile Include="03-ItemChildren.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +67,9 @@
     </PackageReference>
     <PackageReference Include="Sitecore.Nexus.Licensing">
       <Version>2.0.6</Version>
+    </PackageReference>
+    <PackageReference Include="Sitecore.NSubstituteUtils">
+      <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="xunit">
       <Version>2.4.1</Version>

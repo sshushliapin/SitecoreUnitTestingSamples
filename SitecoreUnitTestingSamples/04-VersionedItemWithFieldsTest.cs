@@ -11,10 +11,10 @@ using Xunit;
 
 namespace SitecoreUnitTestingSamples
 {
-    public class ItemWithFieldsTest
+    public class VersionedItemWithFieldsTest
     {
         [Theory, DefaultAutoData]
-        public void GetItem(Database db, Item item, Field field)
+        public void GetFieldValue(Database db, Item item, Field field)
         {
             field.Value.Returns("Welcome!");
             item.Fields["Title"].Returns(field);
@@ -48,19 +48,15 @@ namespace SitecoreUnitTestingSamples
             public void Customize(IFixture fixture)
             {
                 fixture.Customize<Item>(x =>
-                    x.FromFactory(() => CreateItem(fixture))
+                    x.FromFactory<ID, ItemData, Database>(CreateItem)
                         .OmitAutoProperties());
             }
 
-            private static Item CreateItem(ISpecimenBuilder fixture)
+            private static Item CreateItem(ID id, ItemData itemData, Database database)
             {
-                var item = Substitute.For<Item>(
-                    fixture.Create<ID>(),
-                    fixture.Create<ItemData>(),
-                    fixture.Create<Database>());
-
+                var item = Substitute.For<Item>(id, itemData, database);
+                item.Axes.Returns(Substitute.For<ItemAxes>(item));
                 item.Fields.Returns(Substitute.For<FieldCollection>(item));
-
                 return item;
             }
         }
