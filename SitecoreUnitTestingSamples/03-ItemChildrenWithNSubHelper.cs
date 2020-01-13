@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.Xunit2;
 using NSubstitute;
-using Sitecore.Collections;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.NSubstituteUtils;
@@ -18,12 +16,9 @@ namespace SitecoreUnitTestingSamples
             FakeItem child1Fake,
             FakeItem child2Fake)
         {
-            child1Fake.WithName("Getting Started");
-            child2Fake.WithName("Troubleshooting");
-
-            var parent = (Item)parentFake.WithChild(child1Fake).WithChild(child2Fake);
-            var child1 = (Item)child1Fake;
-            var child2 = (Item)child2Fake;
+            Item parent = parentFake.WithChild(child1Fake).WithChild(child2Fake);
+            Item child1 = child1Fake.WithName("Getting Started");
+            Item child2 = child2Fake.WithName("Troubleshooting");
 
             Assert.Same(child1, parent.Children["Getting Started"]);
             Assert.Same(child2, parent.Children["Troubleshooting"]);
@@ -38,8 +33,7 @@ namespace SitecoreUnitTestingSamples
         {
             public DefaultAutoDataAttribute()
                 : base(() => new Fixture()
-                    .Customize(new DatabaseCustomization())
-                    .Customize(new ItemCustomization()))
+                    .Customize(new DatabaseCustomization()))
             {
             }
         }
@@ -51,26 +45,6 @@ namespace SitecoreUnitTestingSamples
                 fixture.Customize<Database>(x =>
                     x.FromFactory(() => Substitute.For<Database>())
                         .OmitAutoProperties());
-            }
-        }
-
-        internal class ItemCustomization : ICustomization
-        {
-            public void Customize(IFixture fixture)
-            {
-                fixture.Customize<Item>(x =>
-                    x.FromFactory<ID, ItemData, Database>(CreateItem)
-                        .OmitAutoProperties());
-            }
-
-            private static Item CreateItem(ID id, ItemData itemData, Database database)
-            {
-                var item = Substitute.For<Item>(id, itemData, database);
-                item.Axes.Returns(Substitute.For<ItemAxes>(item));
-                item.Children.Returns(Substitute.For<ChildList>(item, new ItemList()));
-                item.HasChildren.Returns(c => item.Children.InnerChildren.Any());
-
-                return item;
             }
         }
     }
